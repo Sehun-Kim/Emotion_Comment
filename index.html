@@ -16,7 +16,8 @@
 <div class="filebox">
     <!-- 서버로 전송해줄 것이기 때문에 form tag 사용 -->
     <form enctype="multipart/form-data" action="" id="form" method="POST">
-        <input type="hidden" name="MAX_FILE_SIZE" value="30000000"> <!-- file size check 30MB 이하만 -->
+        <input type="hidden" name="MAX_FILE_SIZE" value="30000000"> 
+        <!-- file size check 30MB 이하만 -->
         <input type="file" id="input" name="userfile">
         <label for="input">사진 선택</label>
     </form>
@@ -61,7 +62,7 @@
     form.onchange = function(e) {
         img.src = URL.createObjectURL(e.target.files[0]);
     };
-    //form tag에 onchange이벤트(객체안의 내용이 바뀌고)가 발생했을 때 img에 url을 지정해 준다. e라는 인자가 들어왔을때..?
+    //form tag에 onchange이벤트(객체안의 내용이 바뀌고)가 발생했을 때 img에 url을 지정해 준다. e == event 자바스크립트 전역객체
 
     /* Blob는 Binary Large Objects의 약자로 “대용량 바이너리 객체”쯤으로 해석할 수 있다. 이름 그대로 이미지, 동영상 등 단순 텍스트 데이터가 아닌 바이너리 데이터를 담을 수 있는 객체이다. HTML5에 들어서면서 자바스크립트에서도 이러한 파일을 다루어야 할 필요성이 생겨 File API 명세에 정의되었다.*/
 
@@ -69,8 +70,8 @@
     // 여기서부터 img가 로드되었을 때 실행되는 콜백함수
     img.onload = function()
     {
-        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, img.width, img.height);
-        //ctx변수에 drawimage함수?를 사용하여 좌표 0.0부터 이미지 너비 높이를 지정하고 캔버스의 너비도 이미지와 같은 너비와 높이로 지정해준다. 
+        ctx.drawImage(img, 0, 0, ctx.width, img.height, 0, 0, img.width, img.height);
+        // drawimage 함수?를 사용하여 좌표 0.0부터 이미지 너비 높이를 지정하고 캔버스의 너비도 이미지와 같은 너비와 높이로 지정해준다. 
 
         //jquery(javascript 라이브러리 코드를 간편화 시켜줌) / 익명함수 [function() { }]를 실행하라로 해석
         $(function() {
@@ -78,7 +79,7 @@
             // form이란 변수에 form tag값을 가져옴(객체로?) == document.getElementByTagName('form')
             
             var fullPath = upload.value;
-            //fullpath 변수에 C:\fakepath\DSC00719.JPG 이런식의 가짜 주소를 넣어준다.
+            // fullpath 변수에 C:\fakepath\DSC00719.JPG 이런식의 가짜 주소를 넣어준다. 웹에서는 로컬경로가 필요없어서 저렇게 나온다.
 
             if (fullPath) {
                 var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
@@ -137,12 +138,16 @@
                     .done(function(response) {
 
                         for (i = 0; i < response.length; i++) // JSON 형태라서..
-                                // 그냥 Raw data가 보고싶으면 alert(JSON.stringify(response)) 를 해보세요. response가 정의 안되어있는데 뭥미?
+                        // 그냥 Raw data가 보고싶으면 alert(JSON.stringify(response)) 를 해보세요. 얼굴 갯수만큼 뜹니다.
                         {
                             var emotionArray = Object.keys(response[i]['scores']).map(function(key) {
-                             return parseFloat(response[i]['scores'][key]) 
+                             return parseFloat(response[i]['scores'][key])
+                             //parsefloat string 타입을 number 타입으로 바꿔준다.
                          });
                             var maxEmotion = emotionArray.reduce((iMax, x, i, emotionArray) => x > emotionArray[iMax] ? i : iMax, 0);
+                            //reduce가 람다펑션의 한종류 imax는 emotionArray에서 제일 큰 값의 인덱스
+                            //google에 javascript max index array로 검색
+
 
                             tops = response[i]['faceRectangle'].top;
                             left = response[i]['faceRectangle'].left;
