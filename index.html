@@ -42,7 +42,7 @@
         <input type="file" id="input" name="userfile">
         <label for="input">사진 선택</label>
     </form>
-    <p id="tags"></p>
+    
 </div>
 </div>
 
@@ -68,7 +68,7 @@
     //img 변수에 image객체를 정의한다.
     var filename = null;
     // filename 변수에 null값을 넣어준다. null = 객체 값이 존재하지 않음
-    var fullPathName = "";
+    var fullPathName = "AZURE_WEB_APP_URL";
     // fulPathName 변수에 현재 만든 Web App의 url을 넣어준다. 나중에 업로드한 파일을 불러올때 필요하다.
     var form = document.getElementById('form');
     // form 변수에 form 태그의 값을 가져온다.
@@ -83,13 +83,13 @@
         6: "sadness",
         7: "surprise"
     };
-    // emotion이라는 객체를 만들어서 숫자(key)에 대응하는 감정(value)값을 넣어준다.
+    // emotion이라는 배열을 만들어서 감정을 넣어준다.
 
     var imgPath;
     var imgBlob;
 
     var emotionImage = new Array(8);
-    //크기가 8인 배열 생성
+    //길이가 8인 배열을 만든다
 
     for (i = 0; i < emotionImage.length; i++) {
         emotionImage[i] = new Image();
@@ -153,7 +153,7 @@
             formData.append("userfile", imgBlob, filename);
             // var formData = new FormData(); formdata 변수에 form객체를 담아준다.
             // 왜 formData = new FormData(); 빈 폼에서는 안 되는 걸까?
-            // -> 빈 폼은 enctype이 설정돼있지 않기 때문. 속성을 어떻게 바꿔줄까...
+            // -> 빈 폼은 enctype이 설정돼있지 않기 때문.
             $.ajax({
                 url: './upload.php',
                 processData: false,
@@ -168,7 +168,7 @@
                             url: "https://api.projectoxford.ai/emotion/v1.0/recognize?",
                             beforeSend: function (xhrObj) {
                                 xhrObj.setRequestHeader("Content-Type", "application/json");
-                                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "");
+                                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "EMOTION_API_KEY");
                             }, //Emotion API key값 넣음
                             type: "POST",
                             data: "{" +
@@ -176,14 +176,13 @@
                         })
                                 .done(function (response) {
                                     for (i = 0; i < response.length; i++) {
-                                        // JSON 포맷이므로 Raw data가 보고싶으면 주석 제거 alert(JSON.stringify(response)).
+                                    
                                         var emotionArray = Object.keys(response[i]['scores']).map(function (key) {
                                             return parseFloat(response[i]['scores'][key]);
                                         });
-                                        //parsefloat == string 타입을 number 타입으로 바꿔준다. json포맷에서 넘어올때 string 타입으로 값이 넘어오기때문
+                                        
                                         var maxEmotion = emotionArray.reduce((iMax, x, i, emotionArray) => x > emotionArray[iMax] ? i : iMax, 0);
-                                        //reduce가 람다펑션의 한종류 imax는 emotionArray에서 제일 큰 값의 인덱스
-                                        //google에 javascript max index array로 검색
+                                        
 
                                         var top = response[i]['faceRectangle'].top;
                                         var left = response[i]['faceRectangle'].left;
@@ -191,7 +190,7 @@
                                         var height = response[i]['faceRectangle'].height;
 
                                         ctx.drawImage(emotionImage[maxEmotion], 0, 0, emotionImage[maxEmotion].width, emotionImage[maxEmotion].height, left - 5, top - 10, width, height);
-                                        // 이건 왜?
+                                       
 
                                         ctx.beginPath();
                                         ctx.lineWidth = "6";
