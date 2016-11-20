@@ -2,10 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta property="og:url" content="https://b8b18f49-0ee0-4-231-b9ee.azurewebsites.net/"/>
-    <meta property="og:title" content="My Cognitive App"/>
-    <meta property="og:description" content="내용"/>
-    <meta property="og:image" content="이미지 경로"/>
     <link rel="stylesheet" type="text/css" href="demo.css">
     <title>Emotion API DEMO</title>
 
@@ -24,16 +20,18 @@
 </head>
 <body style="background-color: #add8e6;">
 <div class="container">
+    <div class="col-xs-12 col-md-12">
     <div style="
-            font-weight: bold; font-size:6.5em; font-family: '10X10 Bold'; text-align: center; color: #FA8072;
+            font-weight: bold; font-size:5.5em; font-family: '10X10 Bold'; text-align: center; color: #FA8072;
             background-image: url(sponsor.png);
             background-repeat: no-repeat;
             background-position: right top;
-            background-position: 800px 140px;
+            background-position: 800px 130px;
             height: 200px;
             width: 100%;"> Emotion API App
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <div class="col-xs-12 col-md-12">
 <div class="filebox">
     <form enctype="multipart/form-data" action="" id="form" method="POST">
@@ -42,17 +40,20 @@
         <input type="file" id="input" name="userfile">
         <label for="input">사진 선택</label>
     </form>
-    
-</div>
-</div>
 
+    </div>
+</div>
+ <div class="col-xs-12 col-md-12">
+        <p id="tags"></p>
+    </div>
+    
 <div class="col-xs-12 col-md-12">
 <div class="canvas">
     <canvas style="alignment: center;" id="myCanvas" width="1000" height="800"></canvas>
      <!--   <canvas> 태그로 출력 영역을 지정하며 자바스크립트의 그리기 메서드를 호출하여 캔버스 영역에 원하는 그림을 그린다.
             API를 이용하려면 서버에 보내는 사진의 크기와 웹에 띄워야 할 사진의 크기가 정확히 일치해야 한다.
             그러므로 Canvas 크기와 아래 drawImage 부분에 사이즈를 적절히 지정해 주자. -->
-</div>
+    </div>
 </div>
 
 <script src="ImageTools.js"></script>
@@ -174,31 +175,7 @@
                             data: "{" +
                             "\"url\":\"" + imgPath + "\"}"
                         })
-                                .done(function (response) {
-                                    for (i = 0; i < response.length; i++) {
-                                    
-                                        var emotionArray = Object.keys(response[i]['scores']).map(function (key) {
-                                            return parseFloat(response[i]['scores'][key]);
-                                        });
-                                        
-                                        var maxEmotion = emotionArray.reduce((iMax, x, i, emotionArray) => x > emotionArray[iMax] ? i : iMax, 0);
-                                        
-
-                                        var top = response[i]['faceRectangle'].top;
-                                        var left = response[i]['faceRectangle'].left;
-                                        var width = response[i]['faceRectangle'].width;
-                                        var height = response[i]['faceRectangle'].height;
-
-                                        ctx.drawImage(emotionImage[maxEmotion], 0, 0, emotionImage[maxEmotion].width, emotionImage[maxEmotion].height, left - 5, top - 10, width, height);
-                                       
-
-                                        ctx.beginPath();
-                                        ctx.lineWidth = "6";
-                                        ctx.strokeStyle = "red";
-                                        ctx.rect(left, top, width, height);
-                                        ctx.stroke();
-                                    }
-                                })
+                          //실습영역
                                 .fail(function (response) {
                                     alert(JSON.stringify(response));
                                 });
@@ -206,6 +183,6 @@
         });
     };
 </script>
-</div>
+
 </body>
 </html>
